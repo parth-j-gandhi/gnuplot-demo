@@ -39,7 +39,7 @@ my $closeChart = Chart::Gnuplot->new(
     timeaxis => 'x',
     grid     => 'on',
     lmargin  => 9,
-    rmargin  => 2,
+    rmargin  => 9,
 );
 
 # Volume data of droppping dates
