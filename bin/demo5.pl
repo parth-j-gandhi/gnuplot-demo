@@ -4,13 +4,12 @@ use strict;
 use warnings;
 
 use Chart::Gnuplot;
+use feature 'say';
+use Data::Dump qw/dump/;
 
-# Time series name and date range
 my $mkt = "XOM";
 
-# Read and save data into arrays
-# my (@dt, @pr, @pd, @vr, @vd) = ();
-my @closes = ();
+my (@closes, @bollinger_low, @bollinger_avg, @bollinger_high) = ();
 
 my $tsFile = "data/finance.dat";
 
@@ -20,28 +19,32 @@ while(<$ts>) {
     next LINE if (!/^\d/);
 
     chomp;
-    my ($dt, $op, $hi, $lo, $cl, $vo) = split(/\t/);
+    my ($dt, $op, $hi, $lo, $cl, $vo, undef, undef, $b_lo, $b_avg, $b_high) = split(/\t/);
     unshift(@closes, [$dt, $op, $hi, $lo, $cl]);
+    unshift(@bollinger_low, [$dt, $b_lo]);
+    unshift(@bollinger_avg, [$dt, $b_avg]);
+    unshift(@bollinger_high, [$dt, $b_high]);
 }
 close $ts;
 
-# Price sub-chart object
-my $closeChart = Chart::Gnuplot->new(
-    output   => "graphs/demo4.jpg",
-    title    => 'Finance Bars',
+my $chart = Chart::Gnuplot->new(
+    output   => "graphs/demo5.jpg",
+    title    => 'Finance Bars with Bollinger Bands',
+);
+
+my $bar_chart = Chart::Gnuplot->new(
     xtics    => {labelfmt => '%b%y'},
     y2tics   => 'on',
     ytics    => {labels => [105, 100, 95, 90, 85, 80]},
     xrange   => ['2/27/2003', '2/27/2004'],
     yrange   => [75, 105],
     timeaxis => 'x',
-    grid     => 'off',
+    grid     => 'on',
     lmargin  => 9,
     rmargin  => 9,
 );
 
-# Volume data of droppping dates
-my $dataSet = Chart::Gnuplot::DataSet->new(
+my $barData = Chart::Gnuplot::DataSet->new(
     points   => \@closes,
     func     => {y => "log10(t)"},
     timefmt  => '%m/%d/%Y',
@@ -51,4 +54,41 @@ my $dataSet = Chart::Gnuplot::DataSet->new(
 );
 
 # Plot the data
-$closeChart->plot2d($dataSet);
+$bar_chart->add2d($barData);
+
+my $bollinger_low_chart  = $bar_chart->copy();
+my $bollinger_avg_chart  = $bar_chart->copy();
+my $bollinger_high_chart = $bar_chart->copy();
+
+my $bollLowData = Chart::Gnuplot::DataSet->new(
+    points   => \@bollinger_low,
+    timefmt  => '%m/%d/%Y',
+    style    => 'lines',
+    color    => 'purple',
+    linetype => 'solid',
+);
+
+$bollinger_low_chart->add2d($bollLowData);
+
+my $bollAvgData = Chart::Gnuplot::DataSet->new(
+    points   => \@bollinger_avg,
+    timefmt  => '%m/%d/%Y',
+    style    => 'lines',
+    color    => 'yellow',
+    linetype => 'solid',
+);
+
+$bollinger_avg_chart->add2d($bollAvgData);
+
+my $bollHighData = Chart::Gnuplot::DataSet->new(
+    points   => \@bollinger_high,
+    timefmt  => '%m/%d/%Y',
+    style    => 'lines',
+    color    => 'green',
+    linetype => 'solid',
+);
+
+$bollinger_high_chart->add2d($bollHighData);
+
+## Final Graph
+$chart->multiplot([[$bar_chart], [$bollinger_low_chart], [$bollinger_avg_chart], [$bollinger_high_chart]]);
