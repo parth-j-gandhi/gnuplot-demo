@@ -27,15 +27,15 @@ close $ts;
 
 # Price sub-chart object
 my $closeChart = Chart::Gnuplot->new(
-    output   => "graphs/demo1.jpg",
-    title    => 'Financial Data with Closes',
+    output   => "graphs/demo2.jpg",
+    title    => 'Financial Data without grid',
     xtics    => {labelfmt => '%b%y'},
     y2tics   => 'on',
     ytics    => {labels => [105, 100, 95, 90, 85, 80]},
     xrange   => ['2/27/2003', '2/27/2004'],
     yrange   => [75, 105],
     timeaxis => 'x',
-    grid     => 'on',
+    grid     => 'off',
     lmargin  => 9,
     rmargin  => 9,
 );
