@@ -19,7 +19,7 @@ while(<$ts>) {
     next LINE if (!/^\d/);
 
     chomp;
-    my ($dt, $op, $hi, $lo, $cl, $vo, undef, undef, $b_lo, $b_avg, $b_high) = split(/\t/);
+    my ($dt, $op, $hi, $lo, $cl, $vo, undef, undef, $b_avg, $b_high, $b_lo) = split(/\t/);
     unshift(@closes, [$dt, $op, $hi, $lo, $cl]);
     unshift(@bollinger_low, [$dt, $b_lo]);
     unshift(@bollinger_avg, [$dt, $b_avg]);
@@ -91,4 +91,4 @@ my $bollHighData = Chart::Gnuplot::DataSet->new(
 $bollinger_high_chart->add2d($bollHighData);
 
 ## Final Graph
-$chart->multiplot([[$bar_chart], [$bollinger_low_chart], [$bollinger_avg_chart], [$bollinger_high_chart]]);
+$chart->multiplot($bar_chart, $bollinger_low_chart, $bollinger_avg_chart, $bollinger_high_chart);
