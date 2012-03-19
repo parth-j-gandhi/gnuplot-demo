@@ -42,13 +42,15 @@ my $bar_chart = Chart::Gnuplot->new(
     grid      => 'on',
     lmargin   => 9,
     rmargin   => 9,
+    xlabel    => 'Date',
+    ylabel    => 'Price'
 );
 
 my $barData = Chart::Gnuplot::DataSet->new(
     points   => \@closes,
     func     => {y => "log10(t)"},
     timefmt  => '%m/%d/%Y',
-    style    => 'financebars',
+    style    => 'candlesticks',
     color    => 'red',
     linetype => 'solid',
 );
@@ -98,6 +100,8 @@ my $vol_chart = Chart::Gnuplot->new(
     lmargin   => 9,
     rmargin   => 9,
     size      => "1, 0.3",
+    xlabel    => 'Date',
+    ylabel    => 'Volume (0000)'
 );
 my $volData = Chart::Gnuplot::DataSet->new(
     points   => \@volume,
