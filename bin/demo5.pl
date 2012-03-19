@@ -34,7 +34,6 @@ my $chart = Chart::Gnuplot->new(
 
 my $bar_chart = Chart::Gnuplot->new(
     xtics    => {labelfmt => '%b%y'},
-    y2tics   => 'on',
     ytics    => {labels => [105, 100, 95, 90, 85, 80]},
     xrange   => ['2/27/2003', '2/27/2004'],
     yrange   => [75, 105],
@@ -53,13 +52,6 @@ my $barData = Chart::Gnuplot::DataSet->new(
     linetype => 'solid',
 );
 
-# Plot the data
-$bar_chart->add2d($barData);
-
-my $bollinger_low_chart  = $bar_chart->copy();
-my $bollinger_avg_chart  = $bar_chart->copy();
-my $bollinger_high_chart = $bar_chart->copy();
-
 my $bollLowData = Chart::Gnuplot::DataSet->new(
     points   => \@bollinger_low,
     timefmt  => '%m/%d/%Y',
@@ -67,8 +59,6 @@ my $bollLowData = Chart::Gnuplot::DataSet->new(
     color    => 'purple',
     linetype => 'solid',
 );
-
-$bollinger_low_chart->add2d($bollLowData);
 
 my $bollAvgData = Chart::Gnuplot::DataSet->new(
     points   => \@bollinger_avg,
@@ -78,8 +68,6 @@ my $bollAvgData = Chart::Gnuplot::DataSet->new(
     linetype => 'solid',
 );
 
-$bollinger_avg_chart->add2d($bollAvgData);
-
 my $bollHighData = Chart::Gnuplot::DataSet->new(
     points   => \@bollinger_high,
     timefmt  => '%m/%d/%Y',
@@ -88,7 +76,8 @@ my $bollHighData = Chart::Gnuplot::DataSet->new(
     linetype => 'solid',
 );
 
-$bollinger_high_chart->add2d($bollHighData);
+# Plot the data
+$bar_chart->add2d($barData, $bollLowData, $bollAvgData, $bollHighData);
 
 ## Final Graph
-$chart->multiplot($bar_chart, $bollinger_low_chart, $bollinger_avg_chart, $bollinger_high_chart);
+$chart->multiplot($bar_chart);

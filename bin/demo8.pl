@@ -32,11 +32,6 @@ my $chart = Chart::Gnuplot->new(
     title    => 'Finance Bars with Bollinger Bands',
 );
 
-$chart->label(
-		text     => "Parth Gandhi - copyright",
-		position => '"2003-07-01",78',
-	     );
-
 my $bar_chart = Chart::Gnuplot->new(
     xtics     => {labelfmt => '%b%y'},
     ytics     => {labels => [105, 100, 95, 90, 85, 80]},
@@ -92,6 +87,12 @@ my $intensityData = Chart::Gnuplot::DataSet->new(
 
 # Plot the data
 $bar_chart->add2d($barData, $bollLowData, $bollAvgData, $bollHighData, $intensityData);
+# $bar_chart->label(
+#     text       => "Parth Gandhi - Copyright",
+#     position   => '"08/01/2003", 100',
+#     font       => "arial, 15",
+#     fontcolor  => "blue",
+# );
 
 my $vol_chart = Chart::Gnuplot->new(
     xtics     => {labelfmt => '%b%y'},

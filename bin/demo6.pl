@@ -30,12 +30,11 @@ close $ts;
 
 my $chart = Chart::Gnuplot->new(
     output   => "graphs/demo6.jpg",
-    title    => 'Finance Bars with Bollinger Bands',
+    title    => 'Finance Bars with Bollinger Bands and Intensity Curve',
 );
 
 my $bar_chart = Chart::Gnuplot->new(
     xtics    => {labelfmt => '%b%y'},
-    y2tics   => 'on',
     ytics    => {labels => [105, 100, 95, 90, 85, 80]},
     xrange   => ['2/27/2003', '2/27/2004'],
     yrange   => [75, 105],
@@ -54,10 +53,6 @@ my $barData = Chart::Gnuplot::DataSet->new(
     linetype => 'solid',
 );
 
-# Plot the data
-$bar_chart->add2d($barData);
-
-my $bollinger_low_chart  = $bar_chart->copy();
 my $bollLowData = Chart::Gnuplot::DataSet->new(
     points   => \@bollinger_low,
     timefmt  => '%m/%d/%Y',
@@ -65,9 +60,7 @@ my $bollLowData = Chart::Gnuplot::DataSet->new(
     color    => 'purple',
     linetype => 'solid',
 );
-$bollinger_low_chart->add2d($bollLowData);
 
-my $bollinger_avg_chart  = $bar_chart->copy();
 my $bollAvgData = Chart::Gnuplot::DataSet->new(
     points   => \@bollinger_avg,
     timefmt  => '%m/%d/%Y',
@@ -75,9 +68,7 @@ my $bollAvgData = Chart::Gnuplot::DataSet->new(
     color    => 'yellow',
     linetype => 'solid',
 );
-$bollinger_avg_chart->add2d($bollAvgData);
 
-my $bollinger_high_chart = $bar_chart->copy();
 my $bollHighData = Chart::Gnuplot::DataSet->new(
     points   => \@bollinger_high,
     timefmt  => '%m/%d/%Y',
@@ -85,9 +76,7 @@ my $bollHighData = Chart::Gnuplot::DataSet->new(
     color    => 'green',
     linetype => 'solid',
 );
-$bollinger_high_chart->add2d($bollHighData);
 
-my $intensity_chart = $bar_chart->copy();
 my $intensityData = Chart::Gnuplot::DataSet->new(
     points   => \@intraday_intensity,
     timefmt  => '%m/%d/%Y',
@@ -96,7 +85,9 @@ my $intensityData = Chart::Gnuplot::DataSet->new(
     linetype => 'solid',
     axes     => 'x1y2',
 );
-$intensity_chart->add2d($intensityData);
+
+# Plot the data
+$bar_chart->add2d($barData, $bollLowData, $bollAvgData, $bollHighData, $intensityData);
 
 ## Final Graph
-$chart->multiplot($bar_chart, $bollinger_low_chart, $bollinger_avg_chart, $bollinger_high_chart, $intensity_chart);
+$chart->multiplot($bar_chart);
